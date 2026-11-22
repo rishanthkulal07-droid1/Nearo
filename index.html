@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nearo – book trusted handymen near you</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#a9c1fb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Nearo">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;600;800&family=Noto+Sans+Devanagari:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css" id="mainCss">
+</head>
+<body class="out">
+<header><div class="wrap bar">
+  <div class="logo"><span class="lm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span id="siteName"></span></div>
+  <div class="hdr-right">
+  <div class="langsw" role="group" aria-label="Language"><button data-lang="en" aria-pressed="true">EN</button><button data-lang="kn" aria-pressed="false">ಕನ್ನಡ</button><button data-lang="hi" aria-pressed="false">हिन्दी</button></div>
+  <div class="acct" id="acct"><span id="acctName"></span><span class="rolepill" id="acctRole"></span><button class="btn ghost sm" id="logoutBtn">Sign out</button></div></div>
+</div></header>
+<nav aria-label="Sections"><div class="wrap" id="tabs"></div></nav>
+<section id="auth" class="auth" aria-label="Sign in">
+  <div class="hero"><h1>Welcome to Nearo</h1><p class="lead" id="authLead">Sign in to book trusted handymen near you.</p></div>
+  <div class="panel authcard">
+    <div class="rtabs" role="tablist" aria-label="Sign in as" id="rtabs">
+      <button role="tab" data-r="user" aria-selected="true">Customer</button>
+      <button role="tab" data-r="pro" aria-selected="false">Handyman</button>
+      <button role="tab" data-r="admin" aria-selected="false">Staff / Admin</button>
+    </div>
+    <form id="loginForm" novalidate>
+      <label for="lPhone">Mobile number</label>
+      <input id="lPhone" type="tel" inputmode="numeric" maxlength="10" data-num placeholder="10-digit mobile number" autocomplete="tel-national">
+      <label for="lPass">Password</label>
+      <div class="pwrow"><input id="lPass" type="password" autocomplete="current-password"><button type="button" data-showpw="lPass">Show</button></div>
+      <p class="err" id="lErr" role="alert"></p>
+      <button class="btn" type="submit">Sign in</button>
+      <p class="meta" style="text-align:center;margin:14px 0 0">New to Nearo? <button type="button" class="linkbtn" id="toSignup">Create an account</button></p>
+    </form>
+    <form id="signupForm" novalidate hidden>
+      <label for="sName">Full name</label><input id="sName" autocomplete="name">
+      <label for="sPhone">Mobile number</label>
+      <input id="sPhone" type="tel" inputmode="numeric" maxlength="10" data-num placeholder="10-digit mobile number" autocomplete="tel-national">
+      <label for="sPass">Create a password (6 or more characters)</label>
+      <div class="pwrow"><input id="sPass" type="password" autocomplete="new-password"><button type="button" data-showpw="sPass">Show</button></div>
+      <label for="sPass2">Confirm password</label><input id="sPass2" type="password" autocomplete="new-password">
+      <p class="err" id="sErr" role="alert"></p>
+      <button class="btn" type="submit" id="sBtn">Create account</button>
+      <p class="meta" style="text-align:center;margin:14px 0 0">Already have an account? <button type="button" class="linkbtn" id="toLogin">Sign in</button></p>
+    </form>
+    <form id="adminForm" novalidate hidden>
+      <label for="aCode">Access code</label>
+      <div class="pwrow"><input id="aCode" type="password" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX"><button type="button" data-showpw="aCode">Show</button></div>
+      <p class="meta" style="margin:8px 0 0">Staff and admins sign in with the personal access code issued by an administrator.</p>
+      <p class="err" id="aErr" role="alert"></p>
+      <button class="btn" type="submit">Open admin console</button>
+    </form>
+    <p class="meta" id="safeLink" hidden style="text-align:center;margin:14px 0 0">Something wrong after a change? <a href="?safe=1">Open in safe mode</a></p>
+    <p class="warnbox" id="safeNote" hidden><b>Safe mode.</b> Custom code is switched off. <a href="./">Exit</a></p>
+  </div>
+  <div data-slot="login"></div>
+</section>
+<div class="wrap" id="annc" hidden><div class="panel" id="anncTxt"></div></div>
+
+
+<main class="wrap">
+<div data-slot="top"></div>
+<section id="vCustom" hidden></section>
+<!-- ADMIN CONSOLE -->
+<section id="vAdmin" hidden>
+  <h1>Admin console</h1>
+  <p class="lead" id="admWho"></p>
+  <div id="admBody"></div>
+</section>
+<!-- CUSTOMER: FIND -->
+<section id="vFind">
+  <div class="hero">
+  <h1>Book a trusted handyman nearby</h1>
+  <p class="lead">Choose a trade, set how far to search (up to 30&nbsp;km) and book someone nearby.</p>
+  <button class="btn alt" id="locBtn">Use my live location</button>
+  <p class="status" id="locStatus" role="status"></p>
+  </div>
+  <div class="panel" style="margin:14px 0">
+    <label for="rng" style="margin:0 0 6px">Search range: <b id="rngVal">10 km</b></label>
+    <input type="range" id="rng" min="1" max="30" value="10" style="padding:0">
+    <div id="rngQ" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn ghost sm" data-r="5">5 km</button><button class="btn ghost sm" data-r="10">10 km</button><button class="btn ghost sm" data-r="15">15 km</button><button class="btn ghost sm" data-r="20">20 km</button><button class="btn ghost sm" data-r="30">30 km</button></div>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Trade"></div>
+  <div class="grid">
+    <div class="panel map">
+      <svg viewBox="0 0 320 320" id="map" role="img" aria-label="Map of handymen around you"></svg>
+      <p class="meta" style="margin:8px 0 0">You are at the centre. Rings show a quarter, half and the full search range. Grey pins are busy.</p>
+    </div>
+    <div>
+      <div class="listhead"><h2 id="listTitle"></h2>
+        <div style="width:190px"><select id="sort" aria-label="Sort by"><option value="d">Nearest first</option><option value="p">Lowest minimum price</option></select></div></div>
+      <div id="list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CUSTOMER: ORDERS -->
+<section id="vOrders" hidden>
+  <h1>My orders</h1>
+  <p class="lead">Track your bookings and see everything you’ve booked before.</p>
+  <div id="ordersList"></div>
+</section>
+
+<!-- HANDYMAN: DASHBOARD -->
+<section id="vDash" hidden>
+  <h1 id="dashTitle"></h1>
+  <div id="dashBadge" class="badgerow"></div>
+  <div class="panel avail themed" id="availPanel">
+    <div><b>Accepting new bookings</b><div class="meta" id="availNote"></div></div>
+    <label class="tog"><input type="checkbox" id="availToggle"><span class="track"></span><span id="availLbl">Available</span></label>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div id="dashList"></div>
+</section>
+
+<!-- HANDYMAN: REWARDS & EARNINGS -->
+<section id="vReward" hidden>
+  <h1>Rewards &amp; earnings</h1>
+  <div class="panel themed rwtop" id="rwTop" style="margin:14px 0"></div>
+  <div class="grid">
+    <div class="panel"><h2 style="margin-bottom:14px">Your reward tree</h2><ul class="tree" id="rwTree"></ul></div>
+    <div id="rwBody"></div>
+  </div>
+</section>
+
+<!-- CUSTOMER: PROFILE -->
+<section id="vUProfile" hidden>
+  <h1>My profile</h1>
+  <p class="lead">Save your details once and we’ll fill them in every time you book.</p>
+  <div class="grid">
+    <div class="panel" style="text-align:center">
+      <div class="av big" id="uAv" aria-hidden="true"></div>
+      <h2 id="uNameShow"></h2><div class="meta" id="uPhoneShow"></div>
+      <div class="stats" id="uStats" style="margin-top:14px"></div>
+    </div>
+    <form class="panel" id="uForm" novalidate>
+      <label for="uName">Full name</label><input id="uName" autocomplete="name">
+      <label for="uPhone">Mobile number</label><input id="uPhone" type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" data-num placeholder="10-digit mobile number" autocomplete="tel-national">
+      <label for="uAddr">Default address or area</label><input id="uAddr" autocomplete="street-address" placeholder="Flat no., street, area">
+      <p class="err" id="uErr" role="alert"></p>
+      <button class="btn" type="submit">Save details</button>
+    </form>
+  </div>
+</section>
+
+<!-- MATERIAL PRICES -->
+<section id="vMat" hidden>
+  <h1>Material prices</h1>
+  <p class="lead" id="matLead"></p>
+  <div class="chips small" id="matChips"></div>
+  <div class="mgrid" id="matGrid"></div>
+</section>
+
+<!-- HANDYMAN: PROFILE -->
+<section id="vProfile" hidden>
+  <h1 id="profTitle"></h1>
+  <p class="lead">Customers within 30&nbsp;km see your phone number and minimum price.</p>
+  <div id="profBadge" class="badgerow"></div>
+  <form class="panel themed" id="proForm" novalidate style="max-width:680px;margin-bottom:40px">
+    <label for="pName">Full name</label><input id="pName" autocomplete="name">
+    <div class="row">
+      <div><label for="pTrade">Your trade</label><select id="pTrade"></select></div>
+      <div><label for="pYears">Years of experience</label><input id="pYears" type="number" min="0" max="60" value="3"></div>
+    </div>
+    <div class="row">
+      <div><label for="pPhone">Phone number</label><input id="pPhone" type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" data-num autocomplete="tel-national" placeholder="10-digit mobile number"></div>
+      <div><label for="pPrice">Minimum price for a job (₹)</label><input id="pPrice" type="number" min="0" step="50" placeholder="300"></div>
+    </div>
+    <label for="pAbout">About your work</label><textarea id="pAbout" rows="3" placeholder="Leaks, pipe fitting, bathroom repairs…"></textarea>
+    <label>Your work location</label>
+    <button type="button" class="btn ghost" id="pLocBtn">Set from my live location</button>
+    <p class="status" id="pLocStatus" role="status"></p>
+    <p class="err" id="pErr" role="alert"></p>
+    <button class="btn" type="submit">Save profile</button>
+  </form>
+</section>
+<div data-slot="bottom"></div>
+</main>
+<footer class="wrap"><div data-slot="footer"></div>Handymen marked “Sample” are demo data. Bookings and profiles are stored in this browser only.</footer>
+
+<dialog id="dlg" aria-labelledby="dlgTitle">
+  <form id="bookForm" novalidate>
+    <h2 id="dlgTitle">Book a handyman</h2>
+    <div class="sum" id="dlgSum"></div>
+    <fieldset class="fs"><legend>How should it be done?</legend>
+      <label class="opt"><input type="radio" name="bType" value="inspect" checked><span><b>Normal booking</b><br><span class="meta">The handyman visits first, inspects the problem and sends you a quote for labour and materials.</span></span></label>
+      <label class="opt"><input type="radio" name="bType" value="quick"><span><b><svg class="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg> Quick repair</b><br><span class="meta">Priority visit within about 2 hours and repair on the spot. Adds a priority fee of <span id="qfee"></span>.</span></span></label>
+    </fieldset>
+    <fieldset class="fs"><legend>How will you pay?</legend>
+      <label class="opt"><input type="radio" name="bPay" value="online" checked><span><b>Pay online (UPI or card)</b></span></label>
+      <label class="opt"><input type="radio" name="bPay" value="cash"><span><b>Pay cash to the handyman</b></span></label>
+      <p class="meta" style="margin:4px 0 0">Free for you. Nearo adds no fee to what you pay.</p>
+    </fieldset>
+    <div class="row">
+      <div><label for="bName">Your name</label><input id="bName" autocomplete="name"></div>
+      <div><label for="bPhone">Your phone</label><input id="bPhone" type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" data-num autocomplete="tel-national" placeholder="10-digit mobile number"></div>
+    </div>
+    <label for="bAddr">Address or area</label><input id="bAddr" autocomplete="street-address" placeholder="Flat no., street, area">
+    <div class="row" id="whenRow">
+      <div><label for="bDate">Date</label><input id="bDate" type="date"></div>
+      <div><label for="bSlot">Time slot</label><select id="bSlot"><option value="Morning (9 am – 12 pm)">Morning (9 am – 12 pm)</option><option value="Afternoon (12 – 4 pm)">Afternoon (12 – 4 pm)</option><option value="Evening (4 – 8 pm)">Evening (4 – 8 pm)</option></select></div>
+    </div>
+    <label for="bPhoto">Photo of the problem (recommended)</label>
+    <input id="bPhoto" type="file" accept="image/*">
+    <img id="bPrev" class="ph" hidden alt="Preview of your photo">
+    <label for="bNote">What needs fixing?</label><textarea id="bNote" rows="3" placeholder="e.g. Pipe under the kitchen sink is leaking"></textarea>
+    <p class="err" id="bErr" role="alert"></p>
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn ghost" id="bCancel">Cancel</button><button class="btn" type="submit">Send booking request</button></div>
+  </form>
+</dialog>
+<dialog id="qdlg" aria-labelledby="qTitle">
+  <form id="qForm" novalidate>
+    <h2 id="qTitle">Materials and quote</h2>
+    <p class="meta" id="qFor"></p>
+    <div id="qList" style="max-height:42vh;overflow:auto"></div>
+    <label for="qLab">Labour charge (₹)</label><input id="qLab" type="number" min="0" step="50">
+    <div class="sum" id="qTot"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn ghost" id="qCancel">Cancel</button><button class="btn" type="submit">Send quote</button></div>
+  </form>
+</dialog>
+<dialog id="rdlg" aria-labelledby="rTitle">
+  <form id="rForm" novalidate>
+    <h2 id="rTitle">Rate your handyman</h2>
+    <p class="meta" id="rInfo"></p>
+    <fieldset class="fs"><legend>How was the work?</legend>
+      <div class="rate" id="rStars" role="radiogroup" aria-label="Star rating">
+        <button type="button" class="star" data-s="1" role="radio" aria-checked="false" aria-label="1 star">★</button>
+        <button type="button" class="star" data-s="2" role="radio" aria-checked="false" aria-label="2 stars">★</button>
+        <button type="button" class="star" data-s="3" role="radio" aria-checked="false" aria-label="3 stars">★</button>
+        <button type="button" class="star" data-s="4" role="radio" aria-checked="false" aria-label="4 stars">★</button>
+        <button type="button" class="star" data-s="5" role="radio" aria-checked="false" aria-label="5 stars">★</button>
+      </div>
+      <div class="meta" id="rWord" style="min-height:1.4em;font-weight:600"></div>
+    </fieldset>
+    <label for="rTxt">Write a comment (optional)</label>
+    <textarea id="rTxt" rows="3" maxlength="300" placeholder="Share what went well or what could be better"></textarea>
+    <p class="err" id="rErr" role="alert"></p>
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn ghost" id="rCancel">Cancel</button><button class="btn" type="submit">Submit review</button></div>
+  </form>
+</dialog>
+<dialog id="odlg" aria-labelledby="oTitle">
+  <form id="oForm" novalidate>
+    <h2 id="oTitle">Complete the job</h2>
+    <p class="meta" id="oInfo"></p>
+    <div class="sum" id="oPay"></div>
+    <label for="oIn">Enter the 4-digit OTP from the customer</label>
+    <input id="oIn" data-num type="tel" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="one-time-code" style="font-size:1.4rem;letter-spacing:.4em;text-align:center">
+    <p class="err" id="oErr" role="alert"></p>
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn ghost" id="oCancel">Cancel</button><button class="btn" type="submit">Verify OTP and get paid</button></div>
+  </form>
+</dialog>
+<dialog id="cdlg" aria-labelledby="cTitle">
+  <form id="cForm">
+    <h2 id="cTitle">Cancel this booking?</h2>
+    <p class="meta" id="cInfo"></p>
+    <label for="cWhy">Reason</label><select id="cWhy"></select>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px"><button type="button" class="btn ghost" id="cKeep">Keep booking</button><button class="btn bad" type="submit">Yes, cancel</button></div>
+  </form>
+</dialog>
+<dialog id="mdlg" aria-labelledby="mTitle">
+  <form id="mForm" method="dialog" novalidate>
+    <h2 id="mTitle"></h2>
+    <p class="meta" id="mMsg" style="margin:8px 0"></p>
+    <div class="secret" id="mSecret" hidden></div>
+    <div id="mInWrap" hidden><label for="mIn" id="mInLbl" style="display:block;margin:8px 0 4px;font-weight:600"></label><input id="mIn" style="width:100%" autocomplete="off" spellcheck="false"></div>
+    <p class="err" id="mErr" role="alert"></p>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn ghost" id="mNo">Cancel</button><button type="button" class="btn" id="mCopy" hidden>Copy</button><button class="btn" type="submit" id="mYes">OK</button></div>
+  </form>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+<script src="js/loader.js"></script>
+</body>
+</html>
