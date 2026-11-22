@@ -12,13 +12,11 @@ FOLDER MAP
                         quotes, OTP completion, payments, rewards, language switching.
   js/admin.js           Sign-in / sign-up, accounts, sessions and the admin console.
   js/studio.js          Code studio (admins can change the app from inside the app).
-  js/ide.js             "Source files" editor inside the Code studio (colour-coded code, live checking, live apply).
-  js/loader.js          Starts the app and swaps in files edited in the Source files editor (read-only).
   js/start.js           Start-up. Runs last.
   js/pwa.js, sw.js, manifest.webmanifest, icons/    Make the site installable as a phone app.
 
 The scripts are plain (non-module) files that share one scope and must load in this order:
-config, i18n, app, admin, studio, ide, start (the order is set inside js/loader.js).
+config, i18n, app, admin, studio, start (already set in index.html).
 
 HOW TO EDIT AND TEST
   1. Edit any file in a text editor (VS Code, Notepad++, etc.).
@@ -43,24 +41,6 @@ SIGN-IN, ROLES AND ADMIN
   - Admin level: everything (access codes, settings, accounts, bookings, material prices, Code studio).
   - Employee level: accounts (suspend / reset password), bookings, material prices.
 
-SOURCE FILES EDITOR (Admin > Code studio > Source files, administrators only)
-  - Every file (index.html, css/styles.css, js/*.js) opens in a VS Code style editor with colour-coded code.
-  - Status bar: GREEN = valid code, AMBER = valid but format warnings, RED = error with the line number (never applied).
-  - Valid changes go live automatically: CSS instantly, JavaScript / HTML by reloading the app (switch off with the checkbox).
-  - Upload files, a folder or a whole .zip (like this one); add new files (js/extra.js, css/extra.css); download everything
-    as a .zip; reset one file or everything. Format button tidies the file. Ctrl+S = apply now.
-  - Edits are stored in the browser (key "nearo.src") and read by js/loader.js. To make them permanent for everyone,
-    use "Download all as .zip" and upload those files to your host.
-  - Safety net: if edited code throws an error while the app starts, the edits switch off automatically and a banner
-    explains why. Opening the site with ?safe=1 also switches every edit off.
-
-RATINGS, BADGES AND BONUSES (js/config.js, bottom)
-  - After a job is completed the customer can rate the handyman 1-5 stars with an optional comment (once per job).
-  - Certified Partner badge: average rating ABOVE BADGE_MIN_RATING (3.5) AND enough jobs: BADGE_TIERS = 16 (green),
-    30 (blue-silver), 50 (gold).
-  - Bonuses added to the handyman's savings: BONUS_STEPS = 15: Rs100, 25: Rs110, 35: Rs120, 45: Rs130, 50: Rs140,
-    65: Rs150, 75: Rs160, 85: Rs170, 95: Rs180, 100: Rs1000.
-
 CODE STUDIO (Admin > Code studio, administrators only)
   - CSS / JavaScript / HTML editors that change the app from inside the app. CSS and HTML apply instantly;
     JavaScript runs at startup (the app reloads after saving). Every save keeps the last 10 versions.
@@ -76,3 +56,11 @@ IMPORTANT BEFORE YOU LAUNCH
     and identity checks for handymen.
   - Code studio JavaScript runs with full access to the app. Give admin access only to people you trust.
   - Translations (Kannada, Hindi) were written without a native-speaker review.
+
+
+CUSTOMER RATINGS, BADGES AND HANDYMAN BONUSES (added)
+- After a real completed booking, the customer can submit one 1–5 star rating and an optional comment.
+- Handyman reviews and average rating appear in the handyman dashboard/profile. Ratings are linked to completed bookings.
+- Badge eligibility requires an average rating strictly above 3.5 stars: Certified at 16 jobs, Silver at 30 jobs, Gold at 50 jobs.
+- Milestone bonus schedule: 15 jobs ₹100; 25 ₹110; 35 ₹120; 45 ₹130; 50 ₹140; 65 ₹150; 75 ₹160; 85 ₹170; 95 ₹180; 100 ₹1,000. Each milestone is credited once to the handyman's in-app reward balance.
+- This build still uses browser localStorage for bookings, reviews and balances. It is a front-end demo, not a secure multi-device payout system. Before public launch, move ratings, job counts and reward ledger to a trusted backend and verify completed jobs server-side. Actual cash transfers require a payment/payout provider.

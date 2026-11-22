@@ -12,7 +12,7 @@
 <link rel="icon" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Kannada:wght@400;600;800&family=Noto+Sans+Devanagari:wght@400;600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css" id="mainCss">
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="out">
 <header><div class="wrap bar">
@@ -225,26 +225,6 @@
     <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn ghost" id="qCancel">Cancel</button><button class="btn" type="submit">Send quote</button></div>
   </form>
 </dialog>
-<dialog id="rdlg" aria-labelledby="rTitle">
-  <form id="rForm" novalidate>
-    <h2 id="rTitle">Rate your handyman</h2>
-    <p class="meta" id="rInfo"></p>
-    <fieldset class="fs"><legend>How was the work?</legend>
-      <div class="rate" id="rStars" role="radiogroup" aria-label="Star rating">
-        <button type="button" class="star" data-s="1" role="radio" aria-checked="false" aria-label="1 star">★</button>
-        <button type="button" class="star" data-s="2" role="radio" aria-checked="false" aria-label="2 stars">★</button>
-        <button type="button" class="star" data-s="3" role="radio" aria-checked="false" aria-label="3 stars">★</button>
-        <button type="button" class="star" data-s="4" role="radio" aria-checked="false" aria-label="4 stars">★</button>
-        <button type="button" class="star" data-s="5" role="radio" aria-checked="false" aria-label="5 stars">★</button>
-      </div>
-      <div class="meta" id="rWord" style="min-height:1.4em;font-weight:600"></div>
-    </fieldset>
-    <label for="rTxt">Write a comment (optional)</label>
-    <textarea id="rTxt" rows="3" maxlength="300" placeholder="Share what went well or what could be better"></textarea>
-    <p class="err" id="rErr" role="alert"></p>
-    <div style="display:flex;gap:10px;justify-content:flex-end"><button type="button" class="btn ghost" id="rCancel">Cancel</button><button class="btn" type="submit">Submit review</button></div>
-  </form>
-</dialog>
 <dialog id="odlg" aria-labelledby="oTitle">
   <form id="oForm" novalidate>
     <h2 id="oTitle">Complete the job</h2>
@@ -274,7 +254,14 @@
     <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn ghost" id="mNo">Cancel</button><button type="button" class="btn" id="mCopy" hidden>Copy</button><button class="btn" type="submit" id="mYes">OK</button></div>
   </form>
 </dialog>
-<div class="toast" id="toast" role="status"></div>
-<script src="js/loader.js"></script>
+<dialog id="reviewDlg" aria-labelledby="reviewTitle"><form id="reviewForm"><h2 id="reviewTitle">Rate your handyman</h2><p class="meta" id="reviewInfo"></p><label for="reviewStars">Rating</label><select id="reviewStars" required><option value="5">★★★★★ — 5 stars</option><option value="4">★★★★☆ — 4 stars</option><option value="3">★★★☆☆ — 3 stars</option><option value="2">★★☆☆☆ — 2 stars</option><option value="1">★☆☆☆☆ — 1 star</option></select><label for="reviewComment" style="display:block;margin-top:12px">Comment (optional)</label><textarea id="reviewComment" rows="4" maxlength="500" placeholder="How was the work?" style="width:100%"></textarea><p class="err" id="reviewErr" role="alert"></p><div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px"><button type="button" class="btn ghost" id="reviewCancel">Cancel</button><button class="btn" type="submit">Submit review</button></div></form></dialog>
+<div class="toast" id="toast" role="status"></div><script src="js/config.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/app.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/studio.js"></script>
+<script src="js/start.js"></script>
+<script src="js/pwa.js"></script>
+
 </body>
 </html>
